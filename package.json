@@ -1,0 +1,18 @@
+{
+  "name": "medical-scheduling-api",
+  "version": "1.0.0",
+  "license": "ISC",
+  "scripts": {
+    "lint": "eslint .",
+    "sls-package": "sls package --aws-profile private --verbose ",
+    "sls-deploy": "sls deploy --aws-profile private --verbose"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "eslint": "^9.6.0",
+    "eslint-plugin-spellcheck": "^0.0.20",
+    "globals": "^15.7.0",
+    "serverless-offline": "^13.6.0",
+    "serverless-plugin-log-retention": "^2.0.0"
+  }
+}

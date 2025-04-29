@@ -1,0 +1,213 @@
+service: autoatencion-orchestration
+frameworkVersion: "3"
+package:
+  excludeDevDependencies: true
+  individually: true
+  patterns:
+    - "!node_modules/**"
+    - "!**/README.md/**"
+    - "!infrastructure/**"
+    - "!./*.json"
+    - "!.*/**"
+    - "!./*.config.mjs"
+    - "!sonar-project.properties"
+    - "!**/*.ts"
+    - "!**/*.spec.js"
+    - "!**/*.test.js"
+    - "!_layers/**"
+provider:
+  name: aws
+  runtime: nodejs20.x
+  versionFunctions: false
+  stage: ${opt:stage, 'dev'}
+  region: ${self:custom.regions.code.${self:custom.stageDeploy}}
+  apiName: AutoatencionServices
+  environment:
+    NODE_PATH: ./:/opt/nodejs/node_modules
+    REGION: ${self:provider.region}
+    STAGE: ${self:custom.regions.stage.${self:custom.stageDeploy}}
+    COGNITO_USER_POOL_ID: ${self:custom.CognitoPool}
+custom:
+  name: autoatencion-orchestration
+  version: -v1
+  stageDeploy: ${opt:stage, 'dev'}
+  account:
+    dev: "073746111526"
+    test: "091480042617"
+    prod: "341710078349"
+  regions:
+    code:
+      dev: us-east-1
+      test: us-east-1
+      prod: us-east-1
+    stage:
+      dev: dev
+      test: test
+      prod: prod
+  serverless-offline:
+    httpPort: 4010
+    websocketPort: 4011
+    lambdaPort: 4012
+  logRetentionInDays: 5 # Set global value for all lambdas
+  ########### Params ############
+  # Default
+  CognitoArn: ${param:CognitoArn}
+  CognitoPool: ${param:CognitoPool}
+  SecretCode: ${param:SecretCode}
+  MasterKey: ${param:MasterKey}
+  EventBusName: ${param:EventBusName}
+  # DynamoDB
+  PermissionTableName: ${param:PermissionTableName}
+  ProcessS3TableName: ProcessS3Table${self:custom.version}
+  ProcessTaskTokenTableName: ProcessTaskTokenTable${self:custom.version}
+  GascoAgendFallidosTableName: GascoAgendFallidosTable
+  GascoAgendClientesTableName: GascoAgendClientesTable
+  GascoPedidosTableName: GascoPedidosTable
+  GascoAgenPedidosTableName: GascoAgendaPedidos${self:custom.version}
+  GascoAgenSupervisoresTableName: GascoSupervisores${self:custom.version}
+  # Security
+  SecurityGroups: ${param:SecurityGroups}
+  Subnets: ${param:Subnets}
+  # Resources
+  JordanBucketName: ${param:JordanBucketName}
+  OrchestratorCrudLambdaArn: ${param:OrchestratorCrudLambdaArn}
+  WorkflowCrudLambdaArn: ${param:WorkflowCrudLambdaArn}
+  ExecutionCrudLambdaArn: ${param:ExecutionCrudLambdaArn}
+  AutoAtencionCrudArn: ${param:AutoAtencionCrudArn}
+  # APIs
+  AutoatencionCommunicationMasterEndpoint: ${param:AutoAtencionCommunicationMasterEndPoint}
+  CampaignEndpoint: ${param:CampaignEndpoint}
+  ListEndpoint: ${param:ListEndpoint}
+  OperatorEndpoint: ${param:OperatorEndpoint}
+  SegmentationEndpoint: ${param:SegmentationEndpoint}
+  AudienceEndpoint: ${param:AudienceEndpoint}
+  TemplateEndpoint: ${param:TemplateEndpoint}
+  # Queues
+  AutoatencionCrudQueueUrl: ${param:AutoatencionCrudQueueUrl}
+  ######## Service names ########
+  StateMachineDT: EXEC_STATEMACHINE_ORCHESTRATION
+  ExecutionCrudFn: ExecutionCrudFunction
+  AutoatencionCrudFn: AutoatencionCrudFunction
+  ClusterName: AutoatencionCampaignCluster${self:custom.version}
+  CleanDatasetContainerName: clean-dataset${self:custom.version}
+  CreateSegmentContainerName: create-segment${self:custom.version}
+  GenerateReportContainerName: generate-report${self:custom.version}
+  CreateReportContainerName: create-report${self:custom.version}
+  CreateReportBlacklistContainerName: create-report-blacklist${self:custom.version}
+  CreateDatasetTestingContName: create-dataset-testing${self:custom.version}
+  ConvertDatasetContName: create-convert-dataset${self:custom.version}
+  OutboundTransformContName: create-outbound-transform${self:custom.version}
+  OrchestrationReportContName: orchestration-report${self:custom.version}
+  ImportAudienceContainerName: import-audience${self:custom.version}
+  SegmentationTableName: SegmentationTable${self:custom.version}
+  TestingTableName: TestingTable${self:custom.version}
+  ConvertTableName: ConvertTable${self:custom.version}
+  ImportTableName: ImportTable${self:custom.version}
+  ReportTableName: ReportTable${self:custom.version}
+  ProcessFileTableName: ProcessFileTableName${self:custom.version}
+  TaskTokenTableName: TaskTokenTable${self:custom.version}
+  ################ Bases ARN #################
+  LambdaBaseARN: "arn:aws:lambda:${self:provider.region}:${self:custom.account.${self:custom.stageDeploy}}:function"
+  StepFunctionBaseARN: "arn:aws:states:${self:provider.region}:${self:custom.account.${self:custom.stageDeploy}}:stateMachine"
+  EventRuleBaseARN: "arn:aws:events:${self:provider.region}:${self:custom.account.${self:custom.stageDeploy}}:rule"
+  ########### Step Functions ARN's ###########
+  StepProcessCampaignStateMachine: "${self:custom.StepFunctionBaseARN}:StepProcessCampaignStateMachine"
+  TestingScheduleStateMachine: "${self:custom.StepFunctionBaseARN}:TestingScheduleStateMachine"
+  OrchestrationSchedulerSfn: "${self:custom.StepFunctionBaseARN}:OrchestrationSchedulerSfn"
+  CreateCommunicationSchedulerSfn: "${self:custom.StepFunctionBaseARN}:CreateCommunicationSchedulerSfn"
+  StateMachineProcessDataset: "${self:custom.StepFunctionBaseARN}:StateMachineProcessDataset"
+plugins:
+  - serverless-plugin-log-retention
+  - serverless-offline
+  - serverless-step-functions
+layers: ${file(./infrastructure/layers.yml)}
+resources:
+  - ${file(./infrastructure/outputs.yml)}
+  - ${file(./infrastructure/orchestrations/resources.yml)}
+  - ${file(./infrastructure/campaign/resources/policies.yml)}
+  - ${file(./infrastructure/campaign/resources/resources.yml)}
+  - ${file(./infrastructure/crud/resources/resources.yml)}
+functions:
+  - ${file(./infrastructure/orchestrations/functions.yml)}
+  - ${file(./infrastructure/crud/functions.yml)}
+  - ${file(./infrastructure/campaign/functions.yml)}
+stepFunctions:
+  stateMachines:
+    ##### DEMOS #####
+    StateMachineOrchestrationDemo1:
+      name: StateMachineOrchestrationDemo1
+      definition: ${file(./infrastructure/orchestrations/asl/demos/demo-1.asl.yml)}
+    StateMachineOrchestrationDemo2:
+      name: StateMachineOrchestrationDemo2
+      definition: ${file(./infrastructure/orchestrations/asl/demos/demo-2.asl.yml)}
+    StateMachineOrchestrationDemo3:
+      name: StateMachineOrchestrationDemo3
+      definition: ${file(./infrastructure/orchestrations/asl/demos/demo-3.asl.yml)}
+    ##### GASCO #####
+    StateMachineCorteMorosidad:
+      name: StateMachineCorteMorosidad
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/corte-morosidad.asl.yml)}
+    StateMachineGascoConfirmarDespacho:
+      name: StateMachineGascoConfirmarDespacho
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/confirmacion-despacho.asl.yml)}
+    StateMachineGascoOverdueNotificationChoice:
+      name: StateMachineGascoOverdueNotificationChoice
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/overdue-email-orchestration.asl.yml)}
+    StateMachineGascoConfirmarAgendamiento:
+      name: StateMachineGascoConfirmarAgendamiento
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/confirmacion-agendamiento.asl.yml)}
+    StateMachineGascoWspConfirmarAgendamiento:
+      name: StateMachineGascoWspConfirmarAgendamiento
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/whatsapp-agendamiento.asl.yml)}
+    StateMachineGascoWspConfirmarDespacho:
+      name: StateMachineGascoWspConfirmarDespacho
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/whatsapp-despacho.asl.yml)}
+    StateMachineGascoWspSurvey:
+      name: StateMachineGascoWspSurvey
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/whatsapp-encuesta.asl.yml)}
+    StateMachineGascoInboundAgendamiento:
+      name: StateMachineGascoInboundAgendamiento
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/gasco-inbound-agendamiento.asl.yml)}
+    StateMachineGascoInboundPlanificacion:
+      name: StateMachineGascoInboundPlanificacion
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/gasco-inbound-planificacion.asl.yml)}
+    StateMachineGascoInboundEvaluacion:
+      name: StateMachineGascoInboundEvaluacion
+      definition: ${file(./infrastructure/orchestrations/asl/gasco/gasco-inbound-evaluacion.asl.yml)}
+
+    ########## CAMPAIGN ##########
+    StepProcessCampaignStateMachine:
+      name: StepProcessCampaignStateMachine
+      definition: ${file(./infrastructure/campaign/asl/step-process-campaign.asl.yml)}
+    OrchestrationSchedulerSfn:
+      name: OrchestrationSchedulerSfn
+      definition: ${file(./infrastructure/campaign/asl/orchestration-scheduler-sfn.asl.yml)}
+    CreateCommunicationSchedulerSfn:
+      name: CreateCommunicationSchedulerSfn
+      definition: ${file(./infrastructure/campaign/asl/create-communication-scheduler-sfn.asl.yml)}
+    StateMachineProcessDataset:
+      name: StateMachineProcessDataset
+      definition: ${file(./infrastructure/campaign/asl/process-dataset-sfn.asl.yml)}
+    ########## TESTING ##########
+    TestingScheduleStateMachine:
+      name: TestingScheduleStateMachine
+      definition: ${file(./infrastructure/campaign/asl/testing-scheduler.asl.yml)}
+    ########## CHILQUINTA ########
+    StateMachineChilquintaWspDistribucion:
+      name: StateMachineChilquintaWspDistribucion
+      definition: ${file(./infrastructure/orchestrations/asl/chilquinta/chilquinta-wsp-distribucion.asl.yml)}
+    StateMachineChilquintaOutboundReport:
+      name: StateMachineChilquintaOutboundReport
+      definition: ${file(./infrastructure/orchestrations/asl/chilquinta/chilquinta-outbound-report.asl.yml)}
+    ChilquintaCobranzaInboundSfn:
+      name: ChilquintaCobranzaInboundSfn
+      definition: ${file(./infrastructure/orchestrations/asl/chilquinta/chilquinta-inbound-cobranza.asl.yml)}
+    StateMachineChilquintaWspCobranza1:
+      name: StateMachineChilquintaWspCobranza1
+      definition: ${file(./infrastructure/orchestrations/asl/chilquinta/chilquinta-cobranza1.asl.yml)}
+    StateMachineChilquintaWspCobranza2:
+      name: StateMachineChilquintaWspCobranza2
+      definition: ${file(./infrastructure/orchestrations/asl/chilquinta/chilquinta-cobranza2.asl.yml)}
+    StateMachineChilquintaWspCobranza3:
+      name: StateMachineChilquintaWspCobranza3
+      definition: ${file(./infrastructure/orchestrations/asl/chilquinta/chilquinta-cobranza3.asl.yml)}

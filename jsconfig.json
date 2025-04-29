@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "*": [
+          "_layers/lambda-core/nodejs/node_modules/*"
+        ]
+      }
+    },
+    "include": [
+      "lambdas/**/src/**/*",
+      "lambdas/**/index.js",
+    ],
+    "exclude": [
+      "node_modules", 
+    ]
+}
+  
