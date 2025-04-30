@@ -37,6 +37,7 @@ export default [
             "DEPENDENCIE",
             "USECASE",
             "USECASES",
+            "NANOID",
           ], // Puedes mantener skipWords vacío o ajustarlo
         },
       ],

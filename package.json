@@ -12,7 +12,10 @@
     "eslint": "^9.6.0",
     "eslint-plugin-spellcheck": "^0.0.20",
     "globals": "^15.7.0",
+    "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^13.6.0",
+    "serverless-offline-aws-eventbridge": "^2.2.4",
+    "serverless-offline-sqs": "^8.0.0",
     "serverless-plugin-log-retention": "^2.0.0"
   }
 }

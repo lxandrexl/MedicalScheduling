@@ -38,6 +38,9 @@ custom:
 plugins:
   - serverless-plugin-log-retention
   - serverless-offline
+  - serverless-offline-aws-eventbridge
+  - serverless-offline-sqs
+  - serverless-dynamodb-local
 layers: ${file(./infrastructure/layers.yml)}
 resources:
   - ${file(./infrastructure/resources.yml)}
