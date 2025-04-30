@@ -24,32 +24,17 @@ provider:
     NODE_PATH: ./:/opt/nodejs/node_modules
     REGION: ${self:provider.region}
     STAGE: ${self:custom.regions.stage.${self:custom.stageDeploy}}
-    COGNITO_USER_POOL_ID: ${self:custom.CognitoPool}
 custom:
-  version: v1
   stageDeploy: ${opt:stage, 'dev'}
   regions:
     code:
       dev: us-east-1
-      test: us-east-1
-      prod: us-east-1
     stage:
       dev: dev
-      test: test
-      prod: prod
   serverless-offline:
     httpPort: 4010
-    websocketPort: 4011
     lambdaPort: 4012
   logRetentionInDays: 7 # Set global value for all lambdas
-  ########### Params ############
-  # Default
-  EventBusName: MedicalScheduling
-  CognitoArn: ''
-  CognitoPool: ''
-  SecretCode: ''
-  # DynamoDB
-  PermissionTableName: ''
 plugins:
   - serverless-plugin-log-retention
   - serverless-offline

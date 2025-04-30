@@ -1,0 +1,104 @@
+Resources:
+  ## Permissions
+  SchedulingLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: SchedulingLambdaRole${self:custom.version}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+
+  SchedulingLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: SchedulingLambdaPolicy${self:custom.version}
+      Description: Permisos para lambda.
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action:
+              - sns:Publish
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              - dynamodb:PutItem
+              - dynamodb:GetItem
+              - dynamodb:UpdateItem
+              - dynamodb:Scan
+              - dynamodb:Query
+              - events:PutEvents
+              - events:PutRule
+              - events:PutTargets
+              - events:RemoveTargets
+              - events:DeleteRule
+              - events:ListRules
+            Effect: Allow
+            Resource: "*"
+      Roles:
+        - !Ref SchedulingLambdaRole
+  ## DynamoDB
+  MedicalSchedulingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: MedicalScheduling
+      AttributeDefinitions:
+        - AttributeName: scheduleId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: scheduleId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  ## Event Bridge | SNS & SQS Services
+  AppointmentTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: AppointmentTopic
+  SqsPE:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: SqsPE
+  SqsCL:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: SqsCL
+  AppointmentQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: AppointmentQueue
+  SqsPolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: SQS:SendMessage
+            Resource:
+              - !GetAtt SqsPE.Arn
+              - !GetAtt SqsCL.Arn
+              - !GetAtt AppointmentQueue.Arn
+      Queues:
+        - !Ref SqsPE
+        - !Ref SqsCL
+        - !Ref AppointmentQueue
+ 
+  AppointmentOutboundRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: AppointmentOutboundRule
+      EventBusName: default
+      EventPattern:
+        detail-type:
+          - Outbound
+      State: ENABLED
+      Targets:
+        - Id: AppointmentQueueTarget
+          Arn: !GetAtt AppointmentQueue.Arn

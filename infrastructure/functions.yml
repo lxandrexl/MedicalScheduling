@@ -1,0 +1,59 @@
+AppointmentFn:
+  handler: lambdas/appointment/index.handler
+  name: AppointmentFn
+  description: Función lambda con endpoints http.
+  package:
+    include:
+      - lambdas/appointment/**
+    exclude:
+      - lambdas/**
+  layers:
+    - !Ref LambdaCoreLambdaLayer
+  role: !GetAtt SchedulingLambdaRole.Arn
+  events:
+    - http:
+        path: /appointment
+        method: post
+        cors: true
+    - http:
+        path: /appointment
+        method: get
+        cors: true
+    - sqs:
+        arn:
+          Fn::GetAtt: [AppointmentQueue, Arn]
+AppointmentPeFN:
+  handler: lambdas/appointment-pe/index.handler
+  name: AppointmentPeFN
+  description: Función lambda.
+  timeout: 300
+  layers:
+    - !Ref AutoatencionCoreLambdaLayer
+  role: !GetAtt SchedulingLambdaRole.Arn
+  package:
+    include:
+      - lambdas/appointment-pe/**
+    exclude:
+      - lambdas/**
+  events:
+    - sqs:
+        arn:
+          Fn::GetAtt: [SqsPE, Arn]
+
+AppointmentClFN:
+  handler: lambdas/appointment-cl/index.handler
+  name: AppointmentClFN
+  description: Función lambda.
+  timeout: 300
+  layers:
+    - !Ref AutoatencionCoreLambdaLayer
+  role: !GetAtt SchedulingLambdaRole.Arn
+  package:
+    include:
+      - lambdas/appointment-cl/**
+    exclude:
+      - lambdas/**
+  events:
+    - sqs:
+        arn:
+          Fn::GetAtt: [SqsCL, Arn]
