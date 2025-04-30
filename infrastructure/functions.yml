@@ -2,6 +2,7 @@ AppointmentFn:
   handler: lambdas/appointment/index.handler
   name: AppointmentFn
   description: Función lambda con endpoints http.
+  timeout: 30
   package:
     include:
       - lambdas/appointment/**
@@ -26,9 +27,9 @@ AppointmentPeFN:
   handler: lambdas/appointment-pe/index.handler
   name: AppointmentPeFN
   description: Función lambda.
-  timeout: 300
+  timeout: 30
   layers:
-    - !Ref AutoatencionCoreLambdaLayer
+    - !Ref LambdaCoreLambdaLayer
   role: !GetAtt SchedulingLambdaRole.Arn
   package:
     include:
@@ -44,9 +45,9 @@ AppointmentClFN:
   handler: lambdas/appointment-cl/index.handler
   name: AppointmentClFN
   description: Función lambda.
-  timeout: 300
+  timeout: 30
   layers:
-    - !Ref AutoatencionCoreLambdaLayer
+    - !Ref LambdaCoreLambdaLayer
   role: !GetAtt SchedulingLambdaRole.Arn
   package:
     include:

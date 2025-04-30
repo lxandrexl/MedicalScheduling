@@ -4,7 +4,6 @@ const exception = require("./controller/exception");
 const httpValidator = require("./guard/http-validator");
 // Utils
 const constants = require("./utils/constants");
-const methods = require("./utils/methods");
 const http = require("./utils/http");
 // Services
 const dynamoDbService = require("./services/DynamoDbService");
@@ -19,7 +18,6 @@ module.exports = {
   ...exception,
   ...httpValidator,
   Constants: constants,
-  Methods: methods,
   Http: http,
   ...dynamoDbService,
   ...eventBridgeService,
