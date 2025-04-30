@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "eslint .",
     "sls-package": "sls package --aws-profile private --verbose ",
-    "sls-deploy": "sls deploy --aws-profile private --verbose"
+    "sls-deploy": "sls deploy --aws-profile private --verbose",
+    "local": "npx sls offline --stage dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.6.0",

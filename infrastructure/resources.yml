@@ -3,7 +3,7 @@ Resources:
   SchedulingLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: SchedulingLambdaRole${self:custom.version}
+      RoleName: SchedulingLambdaRole
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -15,7 +15,7 @@ Resources:
   SchedulingLambdaPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      ManagedPolicyName: SchedulingLambdaPolicy${self:custom.version}
+      ManagedPolicyName: SchedulingLambdaPolicy
       Description: Permisos para lambda.
       PolicyDocument:
         Version: "2012-10-17"

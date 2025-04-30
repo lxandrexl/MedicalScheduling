@@ -1,6 +1,6 @@
 LambdaCore:
   path: _layers/lambda-core
-  name: LambdaCore${self:custom.version}
+  name: LambdaCore
   description: Core dependencies
   compatibleRuntimes:
     - nodejs20.x
