@@ -1,8 +1,9 @@
-const nanoid = require("nanoid");
+const { nanoid } = require("nanoid");
 
 class UseCase {
-  constructor(dynamoDbService) {
+  constructor(dynamoDbService, snsService) {
     this._dynamoDbService = dynamoDbService;
+    this._snsService = snsService;
   }
 
   async execute(req) {

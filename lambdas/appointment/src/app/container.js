@@ -1,12 +1,11 @@
 const UseCase = require("./usecase");
 const {
   ContainerDependency,
-  EventBridgeService,
-  InvokeLambdaService,
-  DynamoDBTable,
-} = require("autoatencion-core");
+  DynamoDbService,
+  SnsService,
+} = require("lambda-core");
 
-const Dependencies = [EventBridgeService, InvokeLambdaService, DynamoDBTable];
+const Dependencies = [DynamoDbService, SnsService];
 const CD = new ContainerDependency();
 CD.registerDependencies(Dependencies);
 CD.registerUsecase(UseCase);
