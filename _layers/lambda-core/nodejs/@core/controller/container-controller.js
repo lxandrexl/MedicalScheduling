@@ -204,7 +204,7 @@ class ContainerController {
   }
 
   async call(event, config = {}) {
-    console.log("ContainerController::Event", JSON.stringify(event));
+    //console.log("ContainerController::Event", JSON.stringify(event));
     const securityHeaders = this.getSecurityHeaders();
     try {
       const error = await this.executeGuards(event);
@@ -213,7 +213,7 @@ class ContainerController {
       this.validateRequest(request);
       const instance = this._container.get(this._symbol);
       const result = await instance.execute(request);
-      console.log("ContainerController::Response", JSON.stringify(result));
+      //console.log("ContainerController::Response", JSON.stringify(result));
       return this.handleResult(result, securityHeaders);
     } catch (e) {
       return this.handleException(e, securityHeaders);
