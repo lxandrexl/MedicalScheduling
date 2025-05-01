@@ -1,14 +1,6 @@
 require("reflect-metadata");
-const { ContainerController, InputProcess } = require("lambda-core");
-const { Usecase, Container } = require("./src/app/container");
+const dispatch = require("./helpers/dispatcher");
 
 module.exports.handler = async (event) => {
-  console.log("Event", JSON.stringify(event));
-
-  const container = new ContainerController()
-    .setInputMethod(InputProcess.REQUEST)
-    .setRemoveResponse()
-    .setContainerIoC(Container, Usecase);
-
-  return await container.call(event);
+  return await dispatch(event);
 };

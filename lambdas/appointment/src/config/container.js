@@ -1,4 +1,4 @@
-const UseCase = require("./usecase");
+const UseCase = require("../app/appointment-post/usecase");
 const {
   ContainerDependency,
   DynamoDbService,
