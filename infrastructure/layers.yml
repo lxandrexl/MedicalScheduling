@@ -4,3 +4,9 @@ LambdaCore:
   description: Core dependencies
   compatibleRuntimes:
     - nodejs20.x
+MysqlCore:
+  path: _layers/mysql-core
+  name: MysqlCore
+  description: Mysql dependencies
+  compatibleRuntimes:
+    - nodejs20.x

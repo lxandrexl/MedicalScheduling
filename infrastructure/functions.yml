@@ -33,12 +33,19 @@ AppointmentPeFN:
   timeout: 30
   layers:
     - !Ref LambdaCoreLambdaLayer
+    - !Ref MysqlCoreLambdaLayer
   role: !GetAtt SchedulingLambdaRole.Arn
   package:
     include:
       - lambdas/appointment-pe/**
     exclude:
       - lambdas/**
+  environment:
+    DB_HOST: 0.tcp.sa.ngrok.io
+    DB_PORT: 15428
+    DB_NAME: medical
+    DB_USER: user
+    DB_PASSWORD: p@ssworD
   events:
     - sqs:
         arn:
@@ -51,12 +58,19 @@ AppointmentClFN:
   timeout: 30
   layers:
     - !Ref LambdaCoreLambdaLayer
+    - !Ref MysqlCoreLambdaLayer
   role: !GetAtt SchedulingLambdaRole.Arn
   package:
     include:
       - lambdas/appointment-cl/**
     exclude:
       - lambdas/**
+  environment:
+    DB_HOST: 0.tcp.sa.ngrok.io
+    DB_PORT: 15428
+    DB_NAME: medical
+    DB_USER: user
+    DB_PASSWORD: p@ssworD
   events:
     - sqs:
         arn:

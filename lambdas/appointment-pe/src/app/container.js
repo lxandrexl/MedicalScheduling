@@ -1,11 +1,11 @@
 const UseCase = require("./usecase");
 const {
   ContainerDependency,
-  DynamoDbService,
   EventBridgeService,
+  SequelizeService,
 } = require("lambda-core");
 
-const Dependencies = [DynamoDbService, EventBridgeService];
+const Dependencies = [EventBridgeService, SequelizeService];
 const CD = new ContainerDependency();
 CD.registerDependencies(Dependencies);
 CD.registerUsecase(UseCase);

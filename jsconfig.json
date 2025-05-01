@@ -3,7 +3,8 @@
       "baseUrl": ".",
       "paths": {
         "*": [
-          "_layers/lambda-core/nodejs/node_modules/*"
+          "_layers/lambda-core/nodejs/node_modules/*",
+          "_layers/mysql-core/nodejs/node_modules/*"
         ]
       }
     },

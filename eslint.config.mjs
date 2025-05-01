@@ -38,6 +38,8 @@ export default [
             "USECASE",
             "USECASES",
             "NANOID",
+            "SEQUELIZE",
+            "TIMESTAMPS",
           ], // Puedes mantener skipWords vacío o ajustarlo
         },
       ],
