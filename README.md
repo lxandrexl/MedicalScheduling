@@ -3,7 +3,7 @@
 
 ### ✨ Proyecto de Backend para Gestión de Citas Médicas
 
-¡Hola! 👋 Soy Joshua, y te presento **MedicalScheduling**, una API backend diseñada para facilitar la gestión de citas médicas. Este proyecto refleja mi pasión por crear soluciones tecnológicas que aborden necesidades reales en el sector salud.
+¡Hola! 👋 Soy Joshua, y te presento **MedicalScheduling**, una API backend diseñada para facilitar la gestión de citas médicas. Este proyecto refleja mi pasión por crear soluciones tecnológicas que aborden necesidades reales.
 
 ---
 
