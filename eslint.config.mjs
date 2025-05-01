@@ -42,6 +42,7 @@ export default [
             "TIMESTAMPS",
             "FS",
             "YAML",
+            "GLOBALS",
           ], // Puedes mantener skipWords vacío o ajustarlo
         },
       ],
