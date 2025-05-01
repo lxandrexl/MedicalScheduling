@@ -1,0 +1,98 @@
+openapi: 3.0.3
+info:
+  title: Appointment API
+  version: 1.0.0
+  description: API para listar y guardar appointments.
+
+servers:
+  - url: https://03d28hz5c7.execute-api.us-east-1.amazonaws.com/dev
+    description: Ambiente de desarrollo
+
+paths:
+  /appointment:
+    get:
+      summary: Lista todos los appointments
+      responses:
+        '200':
+          description: Lista de appointments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  message:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Appointment'
+                example:
+                  status: OK
+                  message:
+                    - insuredId: "00001"
+                      scheduleId: "249a99e1-fc39-4534-bd5f-ba6201c4ed20"
+                      countryISO: "CL"
+                      status: "pending"
+                    - insuredId: "00021"
+                      scheduleId: "0be67c5e-c5eb-4390-89a2-a11df828edb2"
+                      countryISO: "PE"
+                      status: "completed"
+    post:
+      summary: Guarda un nuevo appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAppointment'
+      responses:
+        '200':
+          description: Appointment guardado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+                  message:
+                    $ref: '#/components/schemas/NewAppointment'
+
+components:
+  schemas:
+    Appointment:
+      type: object
+      properties:
+        insuredId:
+          type: string
+          example: "00001"
+        scheduleId:
+          type: string
+          format: uuid
+          example: "249a99e1-fc39-4534-bd5f-ba6201c4ed20"
+        countryISO:
+          type: string
+          example: "CL"
+        status:
+          type: string
+          example: "completed"
+
+    NewAppointment:
+      type: object
+      required:
+        - insuredId
+        - scheduleId
+        - countryISO
+      properties:
+        insuredId:
+          type: string
+          example: "00001"
+        scheduleId:
+          type: string
+          format: uuid
+          example: "249a99e1-fc39-4534-bd5f-ba6201c4ed20"
+        countryISO:
+          type: string
+          example: "CL"

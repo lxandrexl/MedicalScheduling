@@ -15,6 +15,7 @@ package:
     - "!**/*.test.js"
     - "!_layers/**"
     - "!**/docker-compose.yml/**"
+    - "!docs/**"
 provider:
   name: aws
   runtime: nodejs20.x

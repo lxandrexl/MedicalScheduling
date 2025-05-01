@@ -75,3 +75,22 @@ AppointmentClFN:
     - sqs:
         arn:
           Fn::GetAtt: [SqsCL, Arn]
+  
+OpenApiFN:
+  handler: docs/index.handler
+  name: OpenApiFN
+  description: Sirve la documentación OpenAPI
+  package:
+    include:
+      - docs/**
+    exclude:
+      - lambdas/**
+  events:
+    - http:
+          path: docs
+          method: get
+          cors: true
+    - http:
+        path: docs/openapi.yml
+        method: get
+        cors: true

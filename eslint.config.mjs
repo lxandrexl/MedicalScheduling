@@ -40,6 +40,8 @@ export default [
             "NANOID",
             "SEQUELIZE",
             "TIMESTAMPS",
+            "FS",
+            "YAML",
           ], // Puedes mantener skipWords vacío o ajustarlo
         },
       ],
