@@ -10,8 +10,7 @@ class UseCase {
       input.map(async (record) => {
         const { Message } = JSON.parse(record.body);
         const messageParsed = JSON.parse(Message);
-        const result = await this.insertQuery(messageParsed);
-        console.log("rs", result);
+        await this.insertQuery(messageParsed);
         await this.sendEvent(messageParsed);
       })
     );

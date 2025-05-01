@@ -91,7 +91,6 @@ class DynamoDbService {
     if (Object.keys(dictionaryOfName).length > 0) {
       params.ExpressionAttributeNames = dictionaryOfName;
     }
-    console.log("dynamoDb@query", JSON.stringify(params));
     const resultQuery = await client.send(new QueryCommand(params));
     return resultQuery.Items.map((item) => unmarshall(item));
   }

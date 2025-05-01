@@ -2,23 +2,18 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports.handler = async (event) => {
-  console.log("e", event);
   // Obtener la URL del API Gateway de manera dinámica
   const apiUrl = `https://${event.requestContext.domainName}/${event.requestContext.stage}`;
-  console.log("apiUrl", apiUrl);
   const openApiUrl = `${apiUrl}/docs/openapi.yml`; // Construimos la URL de OpenAPI dinámicamente
-  console.log("openApiUrl", openApiUrl);
 
   // Si la petición es para obtener el archivo OpenAPI YAML
   if (event.path === "/docs/openapi.yml") {
-    console.log("entro");
     try {
       // Suponiendo que el archivo 'openapi.yml' esté en el directorio actual de la Lambda
       const yamlContent = fs.readFileSync(
         path.join(__dirname, "openapi.yml"),
         "utf8"
       );
-      console.log("yamlContent", yamlContent);
       return {
         statusCode: 200,
         headers: {

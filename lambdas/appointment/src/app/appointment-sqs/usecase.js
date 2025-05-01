@@ -10,7 +10,6 @@ class AppointmentSQSUseCase {
     await Promise.all(
       input.map(async (record) => {
         const { detail: payload } = JSON.parse(record.body);
-        console.log("Payload", payload);
         await this._dynamoDbService.put({ ...payload, status: "completed" });
       })
     );

@@ -9,8 +9,6 @@ const {
 const { Usecase, Container } = require("../../config/container");
 
 module.exports = async (event) => {
-  console.log("Event", JSON.stringify(event));
-
   const container = new ContainerController()
     .setGuard([ValidateMethod([HttpMethods.GET])])
     .setInputMethod(InputProcess.REQUEST)
