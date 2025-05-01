@@ -1,6 +1,6 @@
 const { nanoid } = require("nanoid");
 
-class UseCase {
+class AppointmentSQSUseCase {
   constructor(dynamoDbService, snsService) {
     this._dynamoDbService = dynamoDbService;
     this._snsService = snsService;
@@ -13,4 +13,4 @@ class UseCase {
   }
 }
 
-module.exports = UseCase;
+module.exports = AppointmentSQSUseCase;

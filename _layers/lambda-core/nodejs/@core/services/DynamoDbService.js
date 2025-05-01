@@ -96,26 +96,29 @@ class DynamoDbService {
     return resultQuery.Items.map((item) => unmarshall(item));
   }
 
-  async scan(where, indexName = null, limit = null) {
-    const dictionaryOfValue = toDictionaryOfValue(where);
-    const dictionaryOfName = toDictionaryOfName(where);
+  async scan(where = {}, indexName = null, limit = null) {
+    const hasFilter = where && Object.keys(where).length > 0;
     const params = {
       TableName: this.tableName,
       ConsistentRead: true,
-      ExpressionAttributeValues: marshall(dictionaryOfValue),
-      FilterExpression: generateQueryExpression(where), // Query
     };
-    if (indexName) {
-      params.IndexName = indexName;
+    if (hasFilter) {
+      const dictionaryOfValue = toDictionaryOfValue(where);
+      const dictionaryOfName = toDictionaryOfName(where);
+      params.ExpressionAttributeValues = marshall(dictionaryOfValue);
+      params.FilterExpression = generateQueryExpression(where);
+      if (Object.keys(dictionaryOfName).length > 0) {
+        params.ExpressionAttributeNames = dictionaryOfName;
+      }
     }
-    if (limit) {
-      params.Limit = limit;
-    }
-    if (Object.keys(dictionaryOfName).length > 0) {
-      params.ExpressionAttributeNames = dictionaryOfName;
-    }
-    console.log("dynamoDb@scan", JSON.stringify(params));
+    console.log("llego1");
+
+    if (indexName) params.IndexName = indexName;
+    if (limit) params.Limit = limit;
+    console.log("llego2");
+
     const resultScan = await client.send(new ScanCommand(params));
+    console.log("llego3");
     return resultScan.Items.map((item) => unmarshall(item));
   }
 

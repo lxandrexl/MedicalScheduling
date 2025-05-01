@@ -8,7 +8,7 @@ module.exports = async (event) => {
   const container = new ContainerController()
     .setInputMethod(InputProcess.REQUEST)
     .setRemoveResponse()
-    .setContainerIoC(Container, Usecase);
+    .setContainerIoC(Container, Usecase.AppointmentSQSUseCase);
 
   return await container.call(event);
 };

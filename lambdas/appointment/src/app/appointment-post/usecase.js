@@ -1,6 +1,7 @@
-const { nanoid } = require("nanoid");
+const { ReasonPhrases } = require("http-status-codes");
+const envs = require("../../config/envs");
 
-class UseCase {
+class AppointmentPOSTUseCase {
   constructor(dynamoDbService, snsService) {
     this._dynamoDbService = dynamoDbService;
     this._snsService = snsService;
@@ -8,9 +9,21 @@ class UseCase {
 
   async execute(req) {
     let { input } = req;
-    const id = nanoid(8);
-    console.log("POST METHOD", input, id);
+    this._dynamoDbService.setTable(envs.MedicalTable);
+    await this._dynamoDbService.put({ ...input, status: "pending" });
+
+    const filter = {
+      countryISO: {
+        DataType: "String",
+        StringValue: input.countryISO,
+      },
+    };
+    const subject = "AppointmentCreated";
+    this._snsService.setTopicArn(envs.TopicArn);
+    await this._snsService.publishMessage(subject, input, filter);
+
+    return { status: ReasonPhrases.ACCEPTED, message: input };
   }
 }
 
-module.exports = UseCase;
+module.exports = AppointmentPOSTUseCase;

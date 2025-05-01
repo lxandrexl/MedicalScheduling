@@ -80,7 +80,15 @@ Resources:
           - Effect: Allow
             Principal:
               Service: events.amazonaws.com
-            Action: SQS:SendMessage
+            Action: sqs:SendMessage
+            Resource:
+              - !GetAtt SqsPE.Arn
+              - !GetAtt SqsCL.Arn
+              - !GetAtt AppointmentQueue.Arn
+          - Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action: sqs:SendMessage
             Resource:
               - !GetAtt SqsPE.Arn
               - !GetAtt SqsCL.Arn
@@ -89,7 +97,24 @@ Resources:
         - !Ref SqsPE
         - !Ref SqsCL
         - !Ref AppointmentQueue
- 
+  SubPE:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref AppointmentTopic
+        Protocol: sqs
+        Endpoint: !GetAtt SqsPE.Arn
+        FilterPolicy:
+          countryISO:
+            - "PE"
+  SubCL:
+      Type: AWS::SNS::Subscription
+      Properties:
+        TopicArn: !Ref AppointmentTopic
+        Protocol: sqs
+        Endpoint: !GetAtt SqsCL.Arn
+        FilterPolicy:
+          countryISO:
+            - "CL"
   AppointmentOutboundRule:
     Type: AWS::Events::Rule
     Properties:

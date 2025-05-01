@@ -1,14 +1,21 @@
 require("reflect-metadata");
-const { ContainerController, InputProcess } = require("lambda-core");
+const { StatusCodes } = require("http-status-codes");
+const {
+  ContainerController,
+  InputProcess,
+  ValidateMethod,
+  HttpMethods,
+} = require("lambda-core");
 const { Usecase, Container } = require("../../config/container");
 
 module.exports = async (event) => {
   console.log("Event", JSON.stringify(event));
 
   const container = new ContainerController()
-    .setInputMethod(InputProcess.BODY)
-    .setRemoveResponse()
-    .setContainerIoC(Container, Usecase);
+    .setGuard([ValidateMethod([HttpMethods.GET])])
+    .setInputMethod(InputProcess.REQUEST)
+    .setStatus(StatusCodes.OK)
+    .setContainerIoC(Container, Usecase.AppointmentGETUseCase);
 
   return await container.call(event);
 };

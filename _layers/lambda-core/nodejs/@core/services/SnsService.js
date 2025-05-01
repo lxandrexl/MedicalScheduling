@@ -19,11 +19,12 @@ class SnsService {
     this.topicArn = topicArn;
   }
 
-  async publishMessage(subject, message) {
+  async publishMessage(subject, message, messageAttributes = {}) {
     const command = new PublishCommand({
       TopicArn: this.topicArn,
       Subject: subject,
       Message: JSON.stringify(message),
+      MessageAttributes: messageAttributes,
     });
     return await this.client.send(command);
   }

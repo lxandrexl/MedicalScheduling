@@ -1,16 +1,18 @@
-const { nanoid } = require("nanoid");
+const { ReasonPhrases } = require("http-status-codes");
+const envs = require("../../config/envs");
 
-class UseCase {
+class AppointmentGETUseCase {
   constructor(dynamoDbService, snsService) {
     this._dynamoDbService = dynamoDbService;
     this._snsService = snsService;
   }
 
-  async execute(req) {
-    let { input } = req;
-    const id = nanoid(8);
-    console.log("GET METHOD", input, id);
+  async execute() {
+    this._dynamoDbService.setTable(envs.MedicalTable);
+    const data = await this._dynamoDbService.scan();
+
+    return { status: ReasonPhrases.OK, message: data };
   }
 }
 
-module.exports = UseCase;
+module.exports = AppointmentGETUseCase;

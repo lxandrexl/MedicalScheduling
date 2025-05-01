@@ -11,6 +11,9 @@ AppointmentFn:
   layers:
     - !Ref LambdaCoreLambdaLayer
   role: !GetAtt SchedulingLambdaRole.Arn
+  environment:
+    TABLE_NAME: MedicalScheduling
+    APPOINTMENT_TOPIC_ARN: !Ref AppointmentTopic
   events:
     - http:
         path: /appointment
