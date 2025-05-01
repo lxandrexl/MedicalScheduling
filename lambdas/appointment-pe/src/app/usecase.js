@@ -6,7 +6,6 @@ class UseCase {
 
   async execute(req) {
     let { input } = req;
-    await this._sequelizeService.testConnection();
     await Promise.all(
       input.map(async (record) => {
         const { Message } = JSON.parse(record.body);

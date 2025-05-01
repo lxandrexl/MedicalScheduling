@@ -111,14 +111,11 @@ class DynamoDbService {
         params.ExpressionAttributeNames = dictionaryOfName;
       }
     }
-    console.log("llego1");
 
     if (indexName) params.IndexName = indexName;
     if (limit) params.Limit = limit;
-    console.log("llego2");
 
     const resultScan = await client.send(new ScanCommand(params));
-    console.log("llego3");
     return resultScan.Items.map((item) => unmarshall(item));
   }
 

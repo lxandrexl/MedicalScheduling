@@ -2,9 +2,8 @@ const { ReasonPhrases } = require("http-status-codes");
 const envs = require("../../config/envs");
 
 class AppointmentGETUseCase {
-  constructor(dynamoDbService, snsService) {
+  constructor(dynamoDbService) {
     this._dynamoDbService = dynamoDbService;
-    this._snsService = snsService;
   }
 
   async execute() {

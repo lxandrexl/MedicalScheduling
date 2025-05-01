@@ -1,9 +1,6 @@
 const UseCase = require("./usecase");
-const {
-  ContainerDependency,
-  EventBridgeService,
-  SequelizeService,
-} = require("lambda-core");
+const { ContainerDependency, EventBridgeService } = require("lambda-core");
+const { SequelizeService } = require("mysql-core");
 
 const Dependencies = [EventBridgeService, SequelizeService];
 const CD = new ContainerDependency();
